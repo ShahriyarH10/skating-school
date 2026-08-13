@@ -35,3 +35,31 @@ body {
 input, select, textarea, button {
   font-family: inherit;
 }
+
+/* Print support for the payment receipt (and any future .print-area use).
+   Printing directly from the page — rather than opening a blank popup and
+   document.write()-ing HTML into it — avoids popup blockers and CSP edge
+   cases that a synthesized about:blank document can run into once deployed. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .no-print {
+    display: none !important;
+  }
+  @page {
+    margin: 12mm;
+  }
+}

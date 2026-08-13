@@ -14,105 +14,121 @@ export default function ReceiptPage() {
   const { id } = useParams();
   const [receipt, setReceipt] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => { api(`/api/receipts?id=${id}`).then(setReceipt).finally(() => setLoading(false)); }, [id]);
+  useEffect(() => {
+    api(`/api/receipts?id=${id}`).then(setReceipt).catch(() => setNotFound(true)).finally(() => setLoading(false));
+  }, [id]);
 
   if (loading) return <PageLoading statCards={0} />;
-  if (!receipt) return <div className={cx.card}><EmptyState icon={Icon.CreditCard} title="Receipt not found" /></div>;
+  if (notFound || !receipt) return <div className={cx.card}><EmptyState icon={Icon.CreditCard} title="Receipt not found" /></div>;
 
   const methodLabel = METHOD_LABEL[receipt.method] || receipt.method;
   const typeLabel = TYPE_LABEL[receipt.type] || receipt.type;
 
-  const exportPDF = () => {
-    const w = window.open("", "_blank");
-    w.document.write(`<!DOCTYPE html><html><head><title>Receipt ${receipt.receiptNo}</title>
-    <style>body{font-family:Arial,sans-serif;padding:20px;color:#0F172A;max-width:500px;margin:0 auto}
-    .hdr{text-align:center;border-bottom:2px solid #0F172A;padding-bottom:16px;margin-bottom:16px}
-    .hdr h2{margin:0 0 4px;font-size:18px}.hdr p{margin:2px 0;font-size:12px;color:#64748B}
-    .row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px}
-    .total{border-top:2px solid #0F172A;margin-top:8px;padding-top:10px;font-weight:800;font-size:16px}
-    .ft{margin-top:24px;text-align:center;font-size:11px;color:#94A3B8;border-top:1px dashed #CBD5E1;padding-top:16px}
-    @media print{body{padding:0}}</style></head><body>
-    <div style="border:2px solid #0F172A;padding:32px">
-    <div class="hdr"><h2>Online Skating School</h2><p>Dhaka, Bangladesh · +880 1707 080 260</p><p>onlineskatingschool@gmail.com</p></div>
-    <div style="text-align:center;font-size:14px;font-weight:700;margin-bottom:16px;letter-spacing:2px">PAYMENT RECEIPT</div>
-    <div class="row"><span>Receipt No:</span><strong>${receipt.receiptNo}</strong></div>
-    <div class="row"><span>Date:</span><span>${receipt.date}</span></div>
-    <hr style="border:none;border-top:1px dashed #CBD5E1;margin:10px 0">
-    <div class="row"><span>Student:</span><span>${receipt.studentName}</span></div>
-    <div class="row"><span>Guardian:</span><span>${receipt.guardian || "—"}</span></div>
-    <div class="row"><span>Branch:</span><span>${receipt.club}</span></div>
-    <div class="row"><span>Program:</span><span>${receipt.program}</span></div>
-    <hr style="border:none;border-top:1px dashed #CBD5E1;margin:10px 0">
-    <div class="row"><span>Payment For:</span><span>${typeLabel} — ${receipt.month}</span></div>
-    <div class="row"><span>Method:</span><span>${methodLabel}</span></div>
-    <div class="row total"><span>Amount Paid:</span><span>৳${receipt.amount.toLocaleString()}</span></div>
-    <div class="ft"><p>Thank you for your payment.</p><p>This is a computer-generated receipt.</p></div>
-    </div><script>window.onload=()=>window.print()</script></body></html>`);
-    w.document.close();
-  };
+  // A real anchor + wa.me is far more resistant to popup blockers than a
+  // window.open() call — production browsers are noticeably stricter about
+  // JS-triggered popups than most people's dev setups are.
+  const waHref = `https://wa.me/?text=${encodeURIComponent(
+    `Payment Receipt - Online Skating School\n\nReceipt: ${receipt.receiptNo}\nStudent: ${receipt.studentName}\nAmount: ৳${receipt.amount.toLocaleString()}\nDate: ${receipt.date}\nType: ${typeLabel} (${receipt.month})\nMethod: ${methodLabel}\n\nThank you for your payment!`
+  )}`;
 
-  const shareWhatsApp = () => {
-    const text = encodeURIComponent(
-      `Payment Receipt - Online Skating School\n\nReceipt: ${receipt.receiptNo}\nStudent: ${receipt.studentName}\nAmount: ৳${receipt.amount.toLocaleString()}\nDate: ${receipt.date}\nType: ${typeLabel} (${receipt.month})\nMethod: ${methodLabel}\n\nThank you for your payment!`
-    );
-    window.open(`https://wa.me/?text=${text}`, "_blank");
-  };
-
-  const rows = [
-    ["Receipt No", receipt.receiptNo],
-    ["Date", receipt.date],
-    null,
-    ["Student Name", receipt.studentName],
-    ["Guardian", receipt.guardian || "—"],
-    ["Branch", receipt.club],
-    ["Program", receipt.program],
-    null,
-    ["Payment For", `${typeLabel} — ${receipt.month}`],
-    ["Payment Method", methodLabel],
+  const infoRows = [
+    { icon: Icon.User, label: "Student", value: receipt.studentName },
+    { icon: Icon.Users, label: "Guardian", value: receipt.guardian || "—" },
+    { icon: Icon.Building, label: "Branch", value: receipt.club || "—" },
+    { icon: Icon.Sparkles, label: "Program", value: receipt.program },
+  ];
+  const paymentRows = [
+    { icon: Icon.Calendar, label: "Payment For", value: `${typeLabel} — ${receipt.month}` },
+    { icon: Icon.CreditCard, label: "Method", value: methodLabel },
+    { icon: Icon.Clock, label: "Date", value: receipt.date },
   ];
 
   return (
     <div className="space-y-5">
-      <Link href="/dashboard/fees" className={cx.link + " inline-flex items-center gap-1"}><Icon.ArrowLeft width={14} height={14} /> Back to Payments</Link>
+      <Link href="/dashboard/fees" className={cx.link + " inline-flex items-center gap-1 no-print"}>
+        <Icon.ArrowLeft width={14} height={14} /> Back to Payments
+      </Link>
 
-      <div className="max-w-lg mx-auto bg-white rounded-2xl shadow-card border-2 border-navy p-8 animate-scaleIn">
-        <div className="text-center border-b-2 border-navy pb-4 mb-4">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal to-teal-light flex items-center justify-center text-xl mx-auto mb-2">⛸</div>
-          <h2 className="text-lg font-extrabold text-slate-900">Online Skating School</h2>
-          <p className="text-xs text-slate-500">Dhaka, Bangladesh · +880 1707 080 260</p>
-          <p className="text-xs text-slate-500">onlineskatingschool@gmail.com</p>
-        </div>
+      <div className="print-area max-w-lg mx-auto">
+        <div className="bg-white rounded-2xl shadow-card overflow-hidden animate-scaleIn">
+          {/* Header band */}
+          <div className="relative bg-gradient-to-br from-navy via-teal-dark to-teal px-7 pt-7 pb-8 text-center overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #fff 1px, transparent 0)", backgroundSize: "20px 20px" }} />
+            <span className="absolute top-4 right-4 inline-flex items-center gap-1 bg-emerald-400 text-emerald-950 text-[11px] font-extrabold px-2.5 py-1 rounded-full tracking-wide">
+              <Icon.Check width={12} height={12} strokeWidth={3} /> PAID
+            </span>
+            <div className="relative w-12 h-12 rounded-2xl bg-white/15 backdrop-blur border border-white/20 flex items-center justify-center text-2xl mx-auto mb-3">⛸</div>
+            <h2 className="relative text-lg font-extrabold text-white">Online Skating School</h2>
+            <p className="relative text-[11px] text-teal-100/90 mt-1">Dhaka, Bangladesh · +880 1707 080 260</p>
+            <p className="relative text-[11px] text-teal-100/90">onlineskatingschool@gmail.com</p>
+          </div>
 
-        <div className="text-center text-sm font-bold tracking-widest uppercase mb-4 text-slate-700">Payment Receipt</div>
+          {/* Receipt number strip */}
+          <div className="flex items-center justify-between px-7 py-3 bg-amber-50 border-b border-dashed border-amber-200">
+            <span className="text-[11px] font-bold text-amber-700 uppercase tracking-widest">Receipt No.</span>
+            <span className="font-mono font-bold text-sm text-amber-800 tracking-wide">{receipt.receiptNo}</span>
+          </div>
 
-        {rows.map((row, i) => row === null
-          ? <hr key={i} className="border-none border-t border-dashed border-slate-300 my-2" />
-          : (
-            <div key={i} className="flex justify-between py-1.5 text-sm">
-              <span className="text-slate-500">{row[0]}:</span>
-              <span className="font-semibold text-slate-800">{row[1]}</span>
+          <div className="px-7 py-6 space-y-5">
+            <div>
+              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Student</h3>
+              <div className="space-y-2.5">
+                {infoRows.map((r) => (
+                  <div key={r.label} className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-lg bg-teal/10 text-teal-dark flex items-center justify-center flex-shrink-0">
+                      <r.icon width={14} height={14} />
+                    </div>
+                    <span className="text-xs text-slate-500 w-20 flex-shrink-0">{r.label}</span>
+                    <span className="text-sm font-semibold text-slate-800 text-right flex-1 truncate">{r.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
 
-        <div className="flex justify-between py-2 mt-2 border-t-2 border-navy font-extrabold text-lg text-slate-900">
-          <span>Amount Paid:</span>
-          <span>৳{receipt.amount.toLocaleString()}</span>
-        </div>
+            <div className="border-t border-dashed border-slate-200" />
 
-        <div className="mt-6 text-center text-xs text-slate-400 border-t border-dashed border-slate-300 pt-4">
-          <p>Thank you for your payment.</p>
-          <p>This is a computer-generated receipt.</p>
+            <div>
+              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Payment</h3>
+              <div className="space-y-2.5">
+                {paymentRows.map((r) => (
+                  <div key={r.label} className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-lg bg-amber/10 text-amber-700 flex items-center justify-center flex-shrink-0">
+                      <r.icon width={14} height={14} />
+                    </div>
+                    <span className="text-xs text-slate-500 w-20 flex-shrink-0">{r.label}</span>
+                    <span className="text-sm font-semibold text-slate-800 text-right flex-1 truncate">{r.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/70 rounded-xl px-5 py-4 flex items-center justify-between">
+              <span className="text-sm font-bold text-emerald-800">Amount Paid</span>
+              <span className="text-2xl font-extrabold text-emerald-700 tracking-tight">৳{receipt.amount.toLocaleString()}</span>
+            </div>
+
+            <div className="text-center text-[11px] text-slate-400 pt-1">
+              <p>Thank you for your payment.</p>
+              <p>This is a computer-generated receipt and needs no signature.</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto flex gap-3">
-        <button onClick={exportPDF} className="flex-1 bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy-light active:scale-[0.98] transition-all duration-150 text-sm flex items-center justify-center gap-2 shadow-sm">
-          <Icon.Download width={16} height={16} /> Export PDF
-        </button>
-        <button onClick={shareWhatsApp} className="flex-1 bg-emerald-500 text-white font-semibold py-3 rounded-xl hover:bg-emerald-600 active:scale-[0.98] transition-all duration-150 text-sm flex items-center justify-center gap-2 shadow-sm">
-          <Icon.MessageCircle width={16} height={16} /> Share via WhatsApp
-        </button>
+      <div className="no-print max-w-lg mx-auto">
+        <div className="flex gap-3">
+          <button onClick={() => window.print()} className="flex-1 bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy-light active:scale-[0.98] transition-all duration-150 text-sm flex items-center justify-center gap-2 shadow-sm">
+            <Icon.Download width={16} height={16} /> Export PDF
+          </button>
+          <a href={waHref} target="_blank" rel="noopener noreferrer" className="flex-1 bg-emerald-500 text-white font-semibold py-3 rounded-xl hover:bg-emerald-600 active:scale-[0.98] transition-all duration-150 text-sm flex items-center justify-center gap-2 shadow-sm">
+            <Icon.MessageCircle width={16} height={16} /> Share via WhatsApp
+          </a>
+        </div>
+        <p className="text-center text-[11px] text-slate-400 mt-3">
+          "Export PDF" opens your browser's print dialog — choose <span className="font-medium text-slate-500">"Save as PDF"</span> as the destination.
+        </p>
       </div>
     </div>
   );

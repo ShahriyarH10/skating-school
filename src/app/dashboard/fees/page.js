@@ -101,8 +101,20 @@ export default function FeesPage() {
   );
 }
 
+// Native <input type="month"> gives "2026-08"; payments store/display a
+// human label like "August 2026" everywhere else (receipts, tables), so
+// convert on the way out rather than changing that stored format.
+function monthInputToLabel(value) {
+  if (!value) return "";
+  const [y, m] = value.split("-").map(Number);
+  if (!y || !m) return "";
+  return new Date(y, m - 1, 1).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+}
+
 function AddPaymentModal({ students, onClose, onAdd }) {
-  const [form, setForm] = useState({ studentId: students[0]?.id || "", amount: "2000", method: "cash", type: "monthly_fee", month: "" });
+  const thisMonth = new Date().toISOString().slice(0, 7); // "2026-08"
+  const [form, setForm] = useState({ studentId: students[0]?.id || "", amount: "2000", method: "cash", type: "monthly_fee", month: monthInputToLabel(thisMonth) });
+  const [monthRaw, setMonthRaw] = useState(thisMonth);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const u = (k, v) => setForm((p) => ({ ...p, [k]: v }));
@@ -142,11 +154,21 @@ function AddPaymentModal({ students, onClose, onAdd }) {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label className={cx.label}>Type</label>
-          <select className={cx.input} value={form.type} onChange={(e) => u("type", e.target.value)}>
+          <select className={cx.input} value={form.type} onChange={(e) => {
+            const t = e.target.value;
+            u("type", t);
+            if (t === "monthly_fee") u("month", monthInputToLabel(monthRaw));
+          }}>
             {Object.entries(TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
         </div>
-        <div><label className={cx.label}>Month / Description *</label><input className={cx.input} placeholder="e.g. August 2026" value={form.month} onChange={(e) => u("month", e.target.value)} /></div>
+        {form.type === "monthly_fee" ? (
+          <div><label className={cx.label}>Month *</label>
+            <input type="month" className={cx.input} value={monthRaw} onChange={(e) => { setMonthRaw(e.target.value); u("month", monthInputToLabel(e.target.value)); }} />
+          </div>
+        ) : (
+          <div><label className={cx.label}>Description *</label><input className={cx.input} placeholder="e.g. Skates - Size 8" value={form.month} onChange={(e) => u("month", e.target.value)} /></div>
+        )}
       </div>
     </ModalShell>
   );
