@@ -4,14 +4,27 @@ import { getSession, forbiddenResponse, unauthorizedResponse } from "@/lib/auth"
 export async function getAuthContext() {
   const session = await getSession();
   if (!session?.id || !session?.role) return null;
-  const user = await db.user.findUnique({
-    where: { id: String(session.id) },
-    select: {
-      id: true, name: true, email: true, role: true, active: true,
-      instructor: { select: { id: true, clubId: true } },
-      student: { select: { id: true, clubId: true } },
-    },
-  });
+  let user;
+  try {
+    user = await db.user.findUnique({
+      where: { id: String(session.id) },
+      select: {
+        id: true, name: true, email: true, role: true, active: true,
+        instructor: { select: { id: true, clubId: true } },
+        student: { select: { id: true, clubId: true } },
+      },
+    });
+  } catch (err) {
+    // getAuthContext runs first in almost every API route, before that route's
+    // own try/catch. Letting a transient DB error (Neon cold start, dropped
+    // connection, etc.) escape from here means Next.js renders its default
+    // HTML error page instead of JSON — which the frontend's res.json() then
+    // fails to parse as "Unexpected token '<'". Treating it as "not
+    // authenticated" is a safe fallback: every caller already handles a null
+    // context by returning a clean 401/403 JSON response.
+    console.error("getAuthContext: user lookup failed", err);
+    return null;
+  }
   if (!user?.active || user.role !== session.role) return null;
   return { session, user };
 }

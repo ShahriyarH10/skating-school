@@ -40,44 +40,49 @@ export async function DELETE(request) {
 
   if (userId === ctx.user.id) return json({ error: "You cannot remove your own account" }, 400);
 
-  const target = await db.user.findUnique({
-    where: { id: userId },
-    include: {
-      instructor: { include: { _count: { select: { schedules: true } } } },
-      _count: { select: { notices: true, attendanceMarked: true } },
-    },
-  });
-  if (!target || !["admin", "instructor"].includes(target.role)) return json({ error: "Not found" }, 404);
-
-  if (target.role === "admin") {
-    const adminCount = await db.user.count({ where: { role: "admin", active: true } });
-    if (adminCount <= 1) return json({ error: "Cannot remove the last remaining administrator" }, 400);
-  }
-
-  if (target.role === "instructor" && target.instructor?._count?.schedules > 0) {
-    return json({ error: `This instructor has ${target.instructor._count.schedules} schedule slot(s) assigned. Reassign or remove them first.` }, 409);
-  }
-
-  // Notices and attendance are historical records tied to whoever created them,
-  // and the database intentionally refuses to delete a user those records still
-  // point to (so attendance/notice history can't silently lose its author).
-  // Surface that as a clear message instead of letting the raw FK-constraint
-  // error crash the request.
-  if (target._count.notices > 0) {
-    return json({ error: `${target.name} has posted ${target._count.notices} notice(s), which keeps a record of who posted them. Delete those notices first if you need to remove this account.` }, 409);
-  }
-  if (target._count.attendanceMarked > 0) {
-    return json({ error: `${target.name} has marked attendance ${target._count.attendanceMarked} time(s), which can't be reassigned. This account can't be deleted — consider deactivating it instead once that's supported.` }, 409);
-  }
-
+  let target;
   try {
+    target = await db.user.findUnique({
+      where: { id: userId },
+      include: {
+        instructor: { include: { _count: { select: { schedules: true } } } },
+        _count: { select: { notices: true, attendanceMarked: true } },
+      },
+    });
+    if (!target || !["admin", "instructor"].includes(target.role)) return json({ error: "Not found" }, 404);
+
+    if (target.role === "admin") {
+      const adminCount = await db.user.count({ where: { role: "admin", active: true } });
+      if (adminCount <= 1) return json({ error: "Cannot remove the last remaining administrator" }, 400);
+    }
+
+    if (target.role === "instructor" && target.instructor?._count?.schedules > 0) {
+      return json({ error: `This instructor has ${target.instructor._count.schedules} schedule slot(s) assigned. Reassign or remove them first.` }, 409);
+    }
+
+    // Notices and attendance are historical records tied to whoever created them,
+    // and the database intentionally refuses to delete a user those records still
+    // point to (so attendance/notice history can't silently lose its author).
+    // Surface that as a clear message instead of letting the raw FK-constraint
+    // error crash the request.
+    if (target._count.notices > 0) {
+      return json({ error: `${target.name} has posted ${target._count.notices} notice(s), which keeps a record of who posted them. Delete those notices first if you need to remove this account.` }, 409);
+    }
+    if (target._count.attendanceMarked > 0) {
+      return json({ error: `${target.name} has marked attendance ${target._count.attendanceMarked} time(s), which can't be reassigned. This account can't be deleted — consider deactivating it instead once that's supported.` }, 409);
+    }
+
     await db.user.delete({ where: { id: userId } });
   } catch (e) {
-    // Safety net for any relation on User not explicitly checked above.
+    // Safety net for any relation on User not explicitly checked above, and
+    // for any other unexpected error — never let this escape uncaught, or
+    // Next.js renders an HTML error page instead of JSON and the client's
+    // res.json() call blows up with "Unexpected token '<'".
     if (e?.code === "P2003" || e?.meta?.field_name || /foreign key|violates.*constraint/i.test(e?.message || "")) {
-      return json({ error: `${target.name} still has related records elsewhere in the system and can't be deleted.` }, 409);
+      return json({ error: `${target?.name || "This user"} still has related records elsewhere in the system and can't be deleted.` }, 409);
     }
-    throw e;
+    console.error("Staff delete failed", e);
+    return json({ error: "Failed to remove staff member" }, 500);
   }
   return json({ success: true });
 }

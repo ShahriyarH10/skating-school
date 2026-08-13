@@ -86,19 +86,19 @@ export async function DELETE(request) {
   const id = new URL(request.url).searchParams.get("id");
   if (!idSchema.safeParse(id).success) return json({ error: "Invalid id" }, 400);
 
-  const club = await db.club.findUnique({
-    where: { id },
-    select: { id: true, _count: { select: { students: true, instructors: true, schedules: true } } },
-  });
-  if (!club) return json({ error: "Branch not found" }, 404);
-  if (club._count.students > 0 || club._count.instructors > 0) {
-    return json({ error: "Reassign students and instructors before deleting this branch" }, 409);
-  }
-  if (club._count.schedules > 0) {
-    return json({ error: "This branch still has schedule slots. Remove them before deleting the branch." }, 409);
-  }
-
   try {
+    const club = await db.club.findUnique({
+      where: { id },
+      select: { id: true, _count: { select: { students: true, instructors: true, schedules: true } } },
+    });
+    if (!club) return json({ error: "Branch not found" }, 404);
+    if (club._count.students > 0 || club._count.instructors > 0) {
+      return json({ error: "Reassign students and instructors before deleting this branch" }, 409);
+    }
+    if (club._count.schedules > 0) {
+      return json({ error: "This branch still has schedule slots. Remove them before deleting the branch." }, 409);
+    }
+
     await db.club.delete({ where: { id } });
     return json({ success: true });
   } catch (err) {

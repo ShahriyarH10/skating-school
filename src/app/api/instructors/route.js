@@ -67,28 +67,29 @@ export async function DELETE(request) {
   if (!assertSameOrigin(request)) return json({error:'Invalid origin'},403);
   const ctx=await getAuthContext(); if(!ctx || ctx.user.role!=='admin') return json({error:'Forbidden'},403);
   const id=new URL(request.url).searchParams.get('id');
-  const inst = await db.instructor.findUnique({
-    where: { id },
-    include: { _count: { select: { schedules: true } }, user: { select: { id: true, name: true, _count: { select: { notices: true, attendanceMarked: true } } } } },
-  });
-  if(!inst) return json({error:'Not found'},404);
-  if(inst.userId===ctx.user.id) return json({error:'You cannot delete your own account'},400);
-  if (inst._count.schedules > 0) {
-    return json({ error: `This instructor has ${inst._count.schedules} schedule slot(s) assigned. Reassign or remove them first.` }, 409);
-  }
-  if (inst.user._count.notices > 0) {
-    return json({ error: `${inst.user.name} has posted ${inst.user._count.notices} notice(s), which keeps a record of who posted them. Delete those notices first if you need to remove this account.` }, 409);
-  }
-  if (inst.user._count.attendanceMarked > 0) {
-    return json({ error: `${inst.user.name} has marked attendance ${inst.user._count.attendanceMarked} time(s), which can't be reassigned. This account can't be deleted.` }, 409);
-  }
   try {
+    const inst = await db.instructor.findUnique({
+      where: { id },
+      include: { _count: { select: { schedules: true } }, user: { select: { id: true, name: true, _count: { select: { notices: true, attendanceMarked: true } } } } },
+    });
+    if(!inst) return json({error:'Not found'},404);
+    if(inst.userId===ctx.user.id) return json({error:'You cannot delete your own account'},400);
+    if (inst._count.schedules > 0) {
+      return json({ error: `This instructor has ${inst._count.schedules} schedule slot(s) assigned. Reassign or remove them first.` }, 409);
+    }
+    if (inst.user._count.notices > 0) {
+      return json({ error: `${inst.user.name} has posted ${inst.user._count.notices} notice(s), which keeps a record of who posted them. Delete those notices first if you need to remove this account.` }, 409);
+    }
+    if (inst.user._count.attendanceMarked > 0) {
+      return json({ error: `${inst.user.name} has marked attendance ${inst.user._count.attendanceMarked} time(s), which can't be reassigned. This account can't be deleted.` }, 409);
+    }
     await db.user.delete({where:{id:inst.userId}});
+    return json({success:true});
   } catch (e) {
     if (e?.code === "P2003" || /foreign key|violates.*constraint/i.test(e?.message || "")) {
-      return json({ error: `${inst.user.name} still has related records elsewhere in the system and can't be deleted.` }, 409);
+      return json({ error: "This instructor still has related records elsewhere in the system and can't be deleted." }, 409);
     }
-    throw e;
+    console.error("Instructor delete failed", e);
+    return json({ error: "Failed to delete instructor" }, 500);
   }
-  return json({success:true});
 }
