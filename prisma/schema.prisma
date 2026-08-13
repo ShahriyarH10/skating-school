@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  admin
+  instructor
+  student
+}
+
+enum PaymentMethod {
+  cash
+  bkash
+  nagad
+  rocket
+  bank_transfer
+}
+
+enum PaymentType {
+  monthly_fee
+  admission_fee
+  equipment
+  event_fee
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role      Role
+  avatar    String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Role-specific relations
+  instructor   Instructor?
+  student      Student?
+
+  // Activity
+  notices          Notice[]
+  attendanceMarked Attendance[] @relation("MarkedBy")
+
+  @@index([role, active])
+  @@map("users")
+}
+
+model Instructor {
+  id             String  @id @default(cuid())
+  userId         String  @unique @map("user_id")
+  specialization String?
+  bio            String?
+  clubId         String? @map("club_id")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  club     Club?     @relation(fields: [clubId], references: [id])
+  schedules Schedule[]
+
+  @@map("instructors")
+}
+
+model Student {
+  id         String   @id @default(cuid())
+  userId     String   @unique @map("user_id")
+  age        Int?
+  guardian   String?
+  program    String   @default("Beginner")
+  clubId     String?  @map("club_id")
+  enrollDate DateTime @default(now()) @map("enroll_date")
+
+  // Address
+  presentAddress   String? @map("present_address") @db.Text
+  permanentAddress String? @map("permanent_address") @db.Text
+
+  // Guardian details (father)
+  fatherName           String? @map("father_name")
+  fatherNid            String? @map("father_nid")
+  fatherOccupation     String? @map("father_occupation")
+  fatherOccupationType String? @map("father_occupation_type")
+  fatherMobile         String? @map("father_mobile")
+
+  // Guardian details (mother)
+  motherName           String? @map("mother_name")
+  motherNid            String? @map("mother_nid")
+  motherOccupation     String? @map("mother_occupation")
+  motherOccupationType String? @map("mother_occupation_type")
+  motherMobile         String? @map("mother_mobile")
+
+  // Applicant details
+  dob           DateTime? @db.Date
+  birthReg      String?   @map("birth_reg")
+  bloodGroup    String?   @map("blood_group")
+  presentSchool String?   @map("present_school")
+  religion      String?
+  gender        String?
+
+  // Admission details
+  session String? @default("2026")
+  shift   String?
+  photo   String? @db.Text // data URL, capped client+server side at ~200KB source image
+
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  club       Club?        @relation(fields: [clubId], references: [id])
+  attendance Attendance[]
+  payments   Payment[]
+
+  @@index([clubId])
+  @@index([enrollDate])
+  @@map("students")
+}
+
+model Club {
+  id       String @id @default(cuid())
+  name     String @unique
+  location String
+  status   String @default("active")
+
+  instructors Instructor[]
+  students    Student[]
+  schedules   Schedule[]
+
+  @@map("clubs")
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  status    String   // "present" | "absent"
+  studentId String   @map("student_id")
+  markedById String  @map("marked_by_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  student  Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  markedBy User    @relation("MarkedBy", fields: [markedById], references: [id])
+
+  @@unique([date, studentId])
+  @@index([studentId, date])
+  @@index([markedById, date])
+  @@map("attendance")
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  studentId String        @map("student_id")
+  amount    Int
+  method    PaymentMethod @default(cash)
+  type      PaymentType   @default(monthly_fee)
+  month     String        // "August 2026", "Admission", etc.
+  receiptNo String        @unique @map("receipt_no")
+  date      DateTime      @default(now())
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, date])
+  @@index([date])
+  @@map("payments")
+}
+
+model Schedule {
+  id           String  @id @default(cuid())
+  day          String  // "Saturday", "Monday", etc.
+  time         String  // "4:00 PM - 5:00 PM"
+  program      String  // "Beginner", "Intermediate", "Advanced"
+  clubId       String  @map("club_id")
+  instructorId String  @map("instructor_id")
+
+  club       Club       @relation(fields: [clubId], references: [id])
+  instructor Instructor @relation(fields: [instructorId], references: [id])
+
+  @@index([clubId, day])
+  @@index([instructorId, day])
+  @@map("schedules")
+}
+
+model Notice {
+  id       String   @id @default(cuid())
+  title    String
+  body     String
+  audience String   @default("All") // "All" or club name
+  urgent   Boolean  @default(false)
+  authorId String   @map("author_id")
+  date     DateTime @default(now())
+
+  author User @relation(fields: [authorId], references: [id])
+
+  @@index([date])
+  @@index([authorId, date])
+  @@map("notices")
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+
+  @@map("settings")
+}

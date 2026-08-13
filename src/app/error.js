@@ -1,0 +1,2 @@
+"use client";
+export default function GlobalError({reset}){return <html><body><main className="min-h-screen flex items-center justify-center p-6"><div className="max-w-md text-center"><h1 className="text-2xl font-bold mb-2">Something went wrong</h1><p className="text-slate-500 mb-5">An unexpected error occurred. Please try again.</p><button onClick={()=>reset()} className="px-5 py-2.5 rounded-lg bg-cyan-600 text-white font-semibold">Try again</button></div></main></body></html>}
