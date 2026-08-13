@@ -8,20 +8,22 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#0F172A] text-white">
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0F172A]/95 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] flex items-center justify-center text-sm">⛸</div>
-            <span className="font-extrabold text-lg">Online <span className="text-[#06B6D4]">Skating</span> School</span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] flex items-center justify-center text-xs sm:text-sm flex-shrink-0">⛸</div>
+            <span className="font-extrabold text-sm sm:text-lg whitespace-nowrap truncate">
+              Online <span className="text-[#06B6D4]">Skating</span><span className="hidden sm:inline"> School</span>
+            </span>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white px-4 py-2 rounded-lg hover:bg-white/5 transition">Login</Link>
-            <Link href="/admission" className="text-sm font-semibold bg-[#0891B2] px-5 py-2 rounded-lg hover:bg-[#0E7490] transition">Apply Now</Link>
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <Link href="/login" className="text-xs sm:text-sm font-medium text-slate-300 hover:text-white px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-white/5 transition">Login</Link>
+            <Link href="/admission" className="hidden sm:inline-flex text-sm font-semibold bg-[#0891B2] px-5 py-2 rounded-lg hover:bg-[#0E7490] transition">Apply Now</Link>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative min-h-[100svh] flex items-center px-5 sm:px-6 pt-24 pb-16">
+      <section className="relative min-h-[100svh] flex items-center px-5 sm:px-6 pt-20 sm:pt-24 pb-16">
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #0891B2 1px, transparent 0)", backgroundSize: "40px 40px" }} />
         <div className="absolute top-[-200px] right-[-200px] w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(8,145,178,0.15)_0%,transparent_70%)] rounded-full" />
         <div className="max-w-6xl mx-auto relative z-10 w-full pb-20 lg:pb-0">
@@ -66,7 +68,7 @@ export default function HomePage() {
       </section>
 
       {/* Programs */}
-      <section id="programs" className="bg-white text-[#0F172A] py-14 sm:py-20 px-5 sm:px-6">
+      <section id="programs" className="scroll-mt-14 sm:scroll-mt-16 bg-white text-[#0F172A] py-14 sm:py-20 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-bold tracking-widest text-[#0891B2] mb-2">PROGRAMS</p>
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Training Programs</h2>
