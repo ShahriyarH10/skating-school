@@ -79,12 +79,12 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-slate-600 block mb-1.5">Email</label>
-              <input type="email" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-[15px] bg-white transition-all duration-150 focus:border-teal focus:ring-4 focus:ring-teal/10 outline-none" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" autoComplete="username" required />
+              <input type="email" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-[15px] bg-white text-slate-800 transition-all duration-150 focus:border-teal focus:ring-4 focus:ring-teal/10 outline-none" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" autoComplete="username" required />
             </div>
             <div>
               <label className="text-xs font-semibold text-slate-600 block mb-1.5">Password</label>
               <div className="relative">
-                <input type={showPassword ? "text" : "password"} className="w-full px-4 py-3 pr-11 border border-slate-200 rounded-xl text-[15px] bg-white transition-all duration-150 focus:border-teal focus:ring-4 focus:ring-teal/10 outline-none" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password" required />
+                <input type={showPassword ? "text" : "password"} className="w-full px-4 py-3 pr-11 border border-slate-200 rounded-xl text-[15px] bg-white text-slate-800 transition-all duration-150 focus:border-teal focus:ring-4 focus:ring-teal/10 outline-none" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password" required />
                 <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label={showPassword ? "Hide password" : "Show password"}>
                   <Icon.Eye width={16} height={16} />
                 </button>

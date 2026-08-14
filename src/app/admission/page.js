@@ -110,7 +110,7 @@ const STEPS = [
 ];
 
 const inputCls = (hasErr) =>
-  `w-full px-4 py-3 border rounded-xl text-[15px] bg-white outline-none transition-all focus:ring-4 ${
+  `w-full px-4 py-3 border rounded-xl text-[15px] bg-white text-slate-800 outline-none transition-all focus:ring-4 ${
     hasErr ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-slate-200 focus:border-teal focus:ring-teal/10"
   }`;
 const labelCls = "text-[13px] font-semibold text-slate-700 block mb-1.5";

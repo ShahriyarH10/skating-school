@@ -2,8 +2,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
 import { ThemeProvider } from "@/lib/theme-context";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -60,8 +58,6 @@ export default function RootLayout({ children }) {
           {children}
         </ThemeProvider>
         <PWARegister />
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

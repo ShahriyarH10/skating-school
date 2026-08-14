@@ -51,8 +51,8 @@ export default function ReceiptPage() {
         <Icon.ArrowLeft width={14} height={14} /> Back to Payments
       </Link>
 
-      <div className="print-area max-w-lg mx-auto">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-card overflow-hidden animate-scaleIn">
+      <div className="print-area max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-card border border-teal/40 overflow-hidden animate-scaleIn">
           {/* Header band */}
           <div className="relative bg-gradient-to-br from-navy via-teal-dark to-teal px-7 pt-7 pb-8 text-center overflow-hidden">
             <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #fff 1px, transparent 0)", backgroundSize: "20px 20px" }} />
@@ -117,7 +117,7 @@ export default function ReceiptPage() {
         </div>
       </div>
 
-      <div className="no-print max-w-lg mx-auto">
+      <div className="no-print max-w-2xl mx-auto">
         <div className="flex gap-3">
           <button onClick={() => window.print()} className="flex-1 bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy-light active:scale-[0.98] transition-all duration-150 text-sm flex items-center justify-center gap-2 shadow-sm">
             <Icon.Download width={16} height={16} /> Export PDF
