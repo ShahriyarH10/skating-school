@@ -1,12 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
-<<<<<<< HEAD
 import { ThemeProvider } from "@/lib/theme-context";
-=======
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
->>>>>>> 77b53fb8038b32a7d1c8cfe1cc06aa72009edf83
 
 const inter = Inter({
   subsets: ["latin"],
