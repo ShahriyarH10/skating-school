@@ -102,11 +102,11 @@ function fieldError(key, form, photo) {
 }
 
 const STEPS = [
-  { name: "Basics", fields: ["photo", "name", "clubId", "mobile", "email"] },
-  { name: "Address", fields: ["presentAddress", "permanentAddress"] },
-  { name: "Guardians", fields: ["fatherName", "fatherNid", "fatherOccupation", "fatherOccupationType", "fatherMobile", "motherName", "motherNid", "motherOccupation", "motherOccupationType", "motherMobile"] },
-  { name: "Details", fields: ["dob", "birthReg", "bloodGroup", "presentSchool", "gender", "shift"] },
-  { name: "Account", fields: ["password", "confirmPassword", "agree"] },
+  { name: "Basics", icon: Icon.User, fields: ["photo", "name", "clubId", "mobile", "email"] },
+  { name: "Address", icon: Icon.MapPin, fields: ["presentAddress", "permanentAddress"] },
+  { name: "Guardians", icon: Icon.Users, fields: ["fatherName", "fatherNid", "fatherOccupation", "fatherOccupationType", "fatherMobile", "motherName", "motherNid", "motherOccupation", "motherOccupationType", "motherMobile"] },
+  { name: "Details", icon: Icon.Clipboard, fields: ["dob", "birthReg", "bloodGroup", "presentSchool", "gender", "shift"] },
+  { name: "Account", icon: Icon.Lock, fields: ["password", "confirmPassword", "agree"] },
 ];
 
 const inputCls = (hasErr) =>
@@ -168,8 +168,9 @@ export default function AdmissionPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
-  const handlePhoto = async (e) => {
-    const file = e.target.files?.[0];
+  const [dragOver, setDragOver] = useState(false);
+
+  const processPhotoFile = async (file) => {
     if (!file) return;
     setPhotoError("");
     if (!file.type.startsWith("image/")) { setPhotoError("Please upload an image file"); return; }
@@ -183,6 +184,12 @@ export default function AdmissionPage() {
     } finally {
       setCompressing(false);
     }
+  };
+  const handlePhoto = (e) => processPhotoFile(e.target.files?.[0]);
+  const handlePhotoDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    processPhotoFile(e.dataTransfer.files?.[0]);
   };
 
   const stepHasErrors = (i) => STEPS[i].fields.some((k) => err(k));
@@ -265,13 +272,25 @@ export default function AdmissionPage() {
                 Step {step + 1} of {STEPS.length} · {STEPS[step].name}
               </span>
             </div>
-            <div className="flex gap-1.5">
+            <div className="flex items-center">
               {STEPS.map((s, i) => (
-                <div key={s.name} className="h-1.5 flex-1 rounded-full bg-slate-100 overflow-hidden">
+                <div key={s.name} className="flex items-center flex-1 last:flex-none">
                   <div
-                    className={`h-full rounded-full transition-all duration-300 ${i < step ? "bg-teal" : i === step ? "bg-gradient-to-r from-teal to-teal-light" : "bg-transparent"}`}
-                    style={{ width: i <= step ? "100%" : "0%" }}
-                  />
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                      i < step
+                        ? "bg-teal text-white"
+                        : i === step
+                        ? "bg-gradient-to-br from-teal to-teal-light text-white shadow-glow-teal scale-110"
+                        : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {i < step ? <Icon.Check width={13} height={13} strokeWidth={3} /> : <s.icon width={13} height={13} />}
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div className="flex-1 h-[2px] mx-1 sm:mx-1.5 rounded-full overflow-hidden bg-slate-100">
+                      <div className="h-full bg-teal transition-all duration-500" style={{ width: i < step ? "100%" : "0%" }} />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -303,21 +322,35 @@ export default function AdmissionPage() {
                 <>
                   <div>
                     <h2 className={sectionTitleCls}>Applicant's photo</h2>
-                    <div className="flex items-center gap-5">
-                      <div className={`w-24 h-24 rounded-2xl bg-slate-100 border flex items-center justify-center overflow-hidden flex-shrink-0 ${show("photo") ? "border-red-300" : "border-slate-200"}`}>
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                      onDragLeave={() => setDragOver(false)}
+                      onDrop={handlePhotoDrop}
+                      className={`relative flex items-center gap-4 sm:gap-5 rounded-2xl border-2 border-dashed p-4 sm:p-5 cursor-pointer transition-all duration-150 ${
+                        dragOver ? "border-teal bg-teal/5" : show("photo") ? "border-red-300 bg-red-50/40" : "border-slate-200 hover:border-teal/50 hover:bg-slate-50/80"
+                      }`}
+                    >
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden flex-shrink-0">
                         {/* eslint-disable-next-line @next/next/no-img-element -- inline base64 data URL, nothing for next/image to optimize */}
-                        {photo ? <img src={photo.dataUrl} alt="Preview" className="w-full h-full object-cover" /> : <Icon.User width={32} height={32} className="text-slate-300" />}
+                        {photo ? <img src={photo.dataUrl} alt="Preview" className="w-full h-full object-cover" /> : <Icon.User width={28} height={28} className="text-slate-300" />}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
-                        <button type="button" onClick={() => fileInputRef.current?.click()} disabled={compressing} className="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-700 font-semibold text-sm px-4 py-2.5 rounded-xl active:bg-slate-50 hover:border-slate-300 transition-all disabled:opacity-60">
-                          {compressing ? "Processing…" : photo ? "Change photo" : "Upload photo *"}
-                        </button>
-                        <p className="text-[11px] text-slate-400 mt-2">JPG or PNG. Automatically resized to fit our 200KB limit.</p>
-                        {photo && <p className="text-[11px] text-emerald-600 mt-1 flex items-center gap-1"><Icon.Check width={11} height={11} /> Ready — {Math.round(photo.bytes / 1024)}KB</p>}
-                        {photoError && <p className="text-[11px] text-red-500 mt-1">{photoError}</p>}
-                        {!photo && !photoError && show("photo") && <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1"><Icon.AlertTriangle width={11} height={11} /> {err("photo")}</p>}
+                        <p className="text-sm font-semibold text-slate-700">
+                          {photo ? "Change photo" : "Tap to upload"}<span className="hidden sm:inline text-slate-400 font-normal">, or drag and drop</span>
+                          {!photo && <span className="text-amber ml-0.5">*</span>}
+                        </p>
+                        <p className="text-[11px] text-slate-400 mt-1">JPG or PNG · auto-resized to fit our 200KB limit</p>
+                        {photo && <p className="text-[11px] text-emerald-600 mt-1.5 flex items-center gap-1"><Icon.Check width={11} height={11} /> Ready — {Math.round(photo.bytes / 1024)}KB</p>}
+                        {photoError && <p className="text-[11px] text-red-500 mt-1.5">{photoError}</p>}
+                        {!photo && !photoError && show("photo") && <p className="text-[11px] text-red-500 mt-1.5 flex items-center gap-1"><Icon.AlertTriangle width={11} height={11} /> {err("photo")}</p>}
                       </div>
+                      {compressing && (
+                        <div className="absolute inset-0 bg-white/80 backdrop-blur-[1px] rounded-2xl flex items-center justify-center gap-2 text-sm font-medium text-slate-500">
+                          <span className="w-4 h-4 border-2 border-slate-300 border-t-teal rounded-full animate-spin" /> Processing…
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -518,13 +551,13 @@ export default function AdmissionPage() {
               style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
             >
               {step > 0 && (
-                <button type="button" onClick={goBack} className="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm active:bg-slate-50 transition-all">
-                  Back
+                <button type="button" onClick={goBack} className="inline-flex items-center gap-1.5 px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm active:bg-slate-50 hover:border-slate-300 transition-all">
+                  <Icon.ArrowLeft width={15} height={15} /> Back
                 </button>
               )}
               {step < STEPS.length - 1 ? (
-                <button type="button" onClick={goNext} className="flex-1 bg-teal text-white font-semibold py-3 rounded-xl hover:bg-teal-dark active:scale-[0.98] transition-all duration-150 shadow-sm">
-                  Continue
+                <button type="button" onClick={goNext} className="flex-1 inline-flex items-center justify-center gap-1.5 bg-teal text-white font-semibold py-3 rounded-xl hover:bg-teal-dark hover:shadow-md active:scale-[0.98] transition-all duration-150 shadow-sm">
+                  Continue <Icon.ChevronRight width={16} height={16} />
                 </button>
               ) : (
                 <button

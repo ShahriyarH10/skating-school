@@ -32,8 +32,8 @@ export default function DashboardHome() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-extrabold text-slate-900">Welcome back, {user.name.split(" ")[0]}</h2>
-        <p className="text-sm text-slate-500 mt-0.5">{greeting}</p>
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">Welcome back, {user.name.split(" ")[0]}</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{greeting}</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -44,10 +44,14 @@ export default function DashboardHome() {
         <StatCard icon={Icon.Bell} label="Urgent Notices" value={urgentNotices.length} tone={urgentNotices.length ? "red" : "slate"} />
       </div>
 
+      {user.role !== "student" && (
+        <FeeStatusWidget students={students} payments={payments} />
+      )}
+
       <div className="grid lg:grid-cols-2 gap-5">
         <div className={cx.card}>
           <div className={cx.cardHeader}>
-            <h3 className="font-bold text-sm text-slate-800">Recent Payments</h3>
+            <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Recent Payments</h3>
             <Link href="/dashboard/fees" className={cx.link}>View all →</Link>
           </div>
           {payments.length === 0 ? (
@@ -72,7 +76,7 @@ export default function DashboardHome() {
 
         <div className={cx.card}>
           <div className={cx.cardHeader}>
-            <h3 className="font-bold text-sm text-slate-800">Notices</h3>
+            <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Notices</h3>
             <Link href="/dashboard/notices" className={cx.link}>View all →</Link>
           </div>
           {notices.length === 0 ? (
@@ -80,12 +84,12 @@ export default function DashboardHome() {
           ) : (
             <div className="p-4 space-y-2.5">
               {notices.slice(0, 4).map((n) => (
-                <div key={n.id} className={`p-3.5 rounded-xl border-l-[3px] bg-slate-50/70 ${n.urgent ? "border-l-red-500" : "border-l-teal"}`}>
+                <div key={n.id} className={`p-3.5 rounded-xl border-l-[3px] bg-slate-50/70 dark:bg-slate-900/40 ${n.urgent ? "border-l-red-500" : "border-l-teal"}`}>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[11px] text-slate-400">{n.date}</span>
                     {n.urgent && <Badge tone="red">Urgent</Badge>}
                   </div>
-                  <div className="font-semibold text-sm text-slate-800">{n.title}</div>
+                  <div className="font-semibold text-sm text-slate-800 dark:text-slate-100">{n.title}</div>
                 </div>
               ))}
             </div>
@@ -93,6 +97,38 @@ export default function DashboardHome() {
         </div>
       </div>
     </div>
+  );
+}
+
+function FeeStatusWidget({ students, payments }) {
+  const thisMonthLabel = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const paidIds = new Set(payments.filter((p) => p.type === "monthly_fee" && p.month === thisMonthLabel).map((p) => p.studentId));
+  const paid = students.filter((s) => paidIds.has(s.id)).length;
+  const unpaid = students.length - paid;
+  const pct = students.length ? Math.round((paid / students.length) * 100) : 0;
+
+  return (
+    <Link href="/dashboard/payment-history" className={cx.card + " block p-5 hover:shadow-md active:scale-[0.995] transition-all duration-150"}>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal to-teal-light flex items-center justify-center text-white flex-shrink-0">
+            <Icon.TrendingUp width={19} height={19} />
+          </div>
+          <div className="min-w-0">
+            <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Fee Status — {thisMonthLabel}</h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              <span className="text-emerald-600 font-semibold">{paid} paid</span> · <span className={unpaid ? "text-red-500 font-semibold" : "text-slate-400"}>{unpaid} unpaid</span> of {students.length} students
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="w-24 h-2 rounded-full bg-slate-100 overflow-hidden hidden sm:block">
+            <div className="h-full bg-gradient-to-r from-teal to-emerald-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
+          </div>
+          <span className={cx.link + " whitespace-nowrap"}>View Payment History →</span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -110,7 +146,7 @@ function StatCard({ icon: IconComp, label, value, tone = "slate" }) {
       <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${tones[tone]} flex items-center justify-center text-white mb-3`}>
         <IconComp width={16} height={16} />
       </div>
-      <div className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight truncate">{value}</div>
+      <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight truncate">{value}</div>
       <div className="text-xs font-medium text-slate-500 mt-0.5">{label}</div>
     </div>
   );

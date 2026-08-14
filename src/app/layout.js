@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
+import { ThemeProvider } from "@/lib/theme-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -42,8 +43,20 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="font-sans antialiased">
-        {children}
+      <head>
+        {/* Runs before first paint to set html.dark from the saved
+            preference (or OS preference on first visit) — without this,
+            there's a visible flash of light mode before React hydrates. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("oss-theme");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark");}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="font-sans antialiased bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-150">
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
         <PWARegister />
       </body>
     </html>

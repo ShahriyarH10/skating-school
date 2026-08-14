@@ -51,10 +51,13 @@ input, select, textarea, button {
     -webkit-print-color-adjust: exact;
   }
   .print-area {
-    position: absolute;
+    position: fixed;
     inset: 0;
     margin: 0;
     padding: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
   }
   .no-print {
     display: none !important;

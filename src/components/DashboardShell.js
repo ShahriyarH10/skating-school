@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { useTheme } from "@/lib/theme-context";
 import { Icon } from "@/components/Icons";
 
 const MENU = [
@@ -15,6 +16,7 @@ const MENU = [
   { section: "Operations" },
   { href: "/dashboard/attendance", label: "Mark Attendance", icon: Icon.Clipboard, roles: ["admin", "instructor"] },
   { href: "/dashboard/fees", label: "Fee & Payments", icon: Icon.Wallet, roles: ["admin", "instructor", "student"] },
+  { href: "/dashboard/payment-history", label: "Payment History", icon: Icon.TrendingUp, roles: ["admin", "instructor"] },
   { href: "/dashboard/schedule", label: "Schedule", icon: Icon.Calendar, roles: ["admin", "instructor", "student"] },
   { section: "Communications" },
   { href: "/dashboard/notices", label: "Notices", icon: Icon.Bell, roles: ["admin", "instructor", "student"] },
@@ -98,7 +100,7 @@ export default function DashboardShell({ user, children }) {
   const onATab = TABS.some((t) => isActive(pathname, t));
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-150">
       {/* Desktop sidebar — untouched, hidden below md */}
       <aside className="hidden md:flex md:flex-col fixed top-0 left-0 bottom-0 w-64 bg-navy z-50">
         <div className="px-5 py-5 flex items-center gap-3">
@@ -117,6 +119,7 @@ export default function DashboardShell({ user, children }) {
               <div className="text-white text-sm font-semibold truncate">{user.name}</div>
               <div className="text-slate-500 text-[11px] capitalize">{user.role}</div>
             </div>
+            <ThemeToggleButton className="text-slate-500 hover:text-white hover:bg-white/5 w-8 h-8 rounded-lg flex items-center justify-center transition-colors flex-shrink-0" />
             <button onClick={logout} className="text-slate-500 hover:text-white hover:bg-white/5 w-8 h-8 rounded-lg flex items-center justify-center transition-colors flex-shrink-0" title="Log out">
               <Icon.LogOut width={16} height={16} />
             </button>
@@ -125,12 +128,12 @@ export default function DashboardShell({ user, children }) {
       </aside>
 
       <div className="flex-1 md:ml-64 flex flex-col min-w-0 pb-16 md:pb-0">
-        <header className="h-14 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-5 sticky top-0 z-30">
-          <h1 className="text-[15px] font-bold text-slate-800 truncate">
+        <header className="h-14 bg-white/90 dark:bg-slate-800/90 backdrop-blur border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-5 sticky top-0 z-30">
+          <h1 className="text-[15px] font-bold text-slate-800 dark:text-slate-100 truncate">
             {activeItem?.label || "Dashboard"}
           </h1>
           <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
-            <span className="capitalize font-medium text-slate-500">{user.role}</span>
+            <span className="capitalize font-medium text-slate-500 dark:text-slate-400">{user.role}</span>
             {user.club && user.club !== "All Clubs" && (<><span>·</span><span>{user.club}</span></>)}
           </div>
         </header>
@@ -140,7 +143,7 @@ export default function DashboardShell({ user, children }) {
       {/* Mobile bottom tab bar — the primary nav surface on phones, replacing the
           hamburger-only pattern so the app reads as a native app, not a squeezed website. */}
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 flex items-stretch"
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-800/95 backdrop-blur border-t border-slate-200 dark:border-slate-700 flex items-stretch"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         {TABS.map((tab) => {
@@ -149,7 +152,7 @@ export default function DashboardShell({ user, children }) {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-colors ${active ? "text-teal" : "text-slate-400 active:text-slate-600"}`}
+              className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-colors ${active ? "text-teal" : "text-slate-400 active:text-slate-600 dark:active:text-slate-300"}`}
             >
               <tab.icon width={21} height={21} strokeWidth={active ? 2.2 : 1.8} />
               <span className={`text-[10px] ${active ? "font-bold" : "font-medium"}`}>{tab.label}</span>
@@ -158,7 +161,7 @@ export default function DashboardShell({ user, children }) {
         })}
         <button
           onClick={() => setSheetOpen(true)}
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-colors ${!onATab ? "text-teal" : "text-slate-400 active:text-slate-600"}`}
+          className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-colors ${!onATab ? "text-teal" : "text-slate-400 active:text-slate-600 dark:active:text-slate-300"}`}
         >
           <Icon.Menu width={21} height={21} strokeWidth={!onATab ? 2.2 : 1.8} />
           <span className={`text-[10px] ${!onATab ? "font-bold" : "font-medium"}`}>More</span>
@@ -172,21 +175,22 @@ export default function DashboardShell({ user, children }) {
         <>
           <div className="md:hidden fixed inset-0 bg-slate-900/50 backdrop-blur-[2px] z-50 animate-fadeIn" onClick={() => setSheetOpen(false)} />
           <div
-            className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-3xl max-h-[82vh] flex flex-col animate-slideUp shadow-popover"
+            className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white dark:bg-slate-800 rounded-t-3xl max-h-[82vh] flex flex-col animate-slideUp shadow-popover"
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
           >
-            <div className="w-10 h-1.5 bg-slate-200 rounded-full mx-auto mt-3 mb-1 flex-shrink-0" />
-            <div className="px-5 py-3.5 flex items-center gap-3 border-b border-slate-100 flex-shrink-0">
+            <div className="w-10 h-1.5 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mt-3 mb-1 flex-shrink-0" />
+            <div className="px-5 py-3.5 flex items-center gap-3 border-b border-slate-100 dark:border-slate-700 flex-shrink-0">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal to-amber flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                 {user.avatar || user.name?.[0]}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-slate-800 text-sm font-semibold truncate">{user.name}</div>
+                <div className="text-slate-800 dark:text-slate-100 text-sm font-semibold truncate">{user.name}</div>
                 <div className="text-slate-400 text-[11px] capitalize">
                   {user.role}{user.club && user.club !== "All Clubs" ? ` · ${user.club}` : ""}
                 </div>
               </div>
-              <button onClick={logout} className="text-slate-400 active:text-red-500 active:bg-red-50 w-9 h-9 rounded-lg flex items-center justify-center transition-colors flex-shrink-0" title="Log out">
+              <ThemeToggleButton className="text-slate-400 active:text-teal active:bg-teal/10 w-9 h-9 rounded-lg flex items-center justify-center transition-colors flex-shrink-0" />
+              <button onClick={logout} className="text-slate-400 active:text-red-500 active:bg-red-50 dark:active:bg-red-500/10 w-9 h-9 rounded-lg flex items-center justify-center transition-colors flex-shrink-0" title="Log out">
                 <Icon.LogOut width={17} height={17} />
               </button>
             </div>
@@ -197,5 +201,14 @@ export default function DashboardShell({ user, children }) {
         </>
       )}
     </div>
+  );
+}
+
+function ThemeToggleButton({ className }) {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <button onClick={toggleTheme} className={className} title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
+      {theme === "dark" ? <Icon.Sun width={16} height={16} /> : <Icon.Moon width={16} height={16} />}
+    </button>
   );
 }
