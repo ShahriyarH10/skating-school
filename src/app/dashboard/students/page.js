@@ -53,7 +53,7 @@ export default function StudentsPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[220px]">
-          <Icon.Search width={16} height={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Icon.Search width={16} height={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             className={cx.input + " pl-10"}
             placeholder="Search by name or guardian..."
@@ -74,14 +74,14 @@ export default function StudentsPage() {
             {/* Mobile: tap a row to open the student. Full table on md+. */}
             <div className="md:hidden divide-y divide-slate-100">
               {filtered.map((s) => (
-                <Link key={s.id} href={`/dashboard/students/${s.id}`} className="flex items-center gap-3 p-4 active:bg-slate-50 transition-colors">
+                <Link key={s.id} href={`/dashboard/students/${s.id}`} className="flex items-center gap-3 p-4 active:bg-slate-50 dark:active:bg-slate-700/60 transition-colors">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal to-amber flex items-center justify-center text-white text-xs font-bold flex-shrink-0">{s.avatar || s.name[0]}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[15px] text-slate-800 truncate">{s.name}</span>
+                      <span className="font-semibold text-[15px] text-slate-800 dark:text-slate-100 truncate">{s.name}</span>
                       <Badge tone={PROGRAM_TONE[s.program] || "slate"}>{s.program}</Badge>
                     </div>
-                    <div className="text-xs text-slate-500 mt-0.5 truncate">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
                       {s.guardian || "No guardian"} · {s.club || "Unassigned"}{s.age != null ? ` · Age ${s.age}` : ""}
                     </div>
                   </div>
@@ -101,7 +101,7 @@ export default function StudentsPage() {
                       <td className={cx.td}>
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal to-amber flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">{s.avatar || s.name[0]}</div>
-                          <span className="font-semibold text-slate-800">{s.name}</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">{s.name}</span>
                         </div>
                       </td>
                       <td className={cx.td}>{s.age ?? "—"}</td>
@@ -162,7 +162,7 @@ function AddStudentModal({ clubs, isInstructor, onClose, onAdd }) {
         <div><label className={cx.label}>Email *</label><input type="email" className={cx.input} value={form.email} onChange={(e) => u("email", e.target.value)} /></div>
         <div><label className={cx.label}>Age</label><input type="number" className={cx.input} value={form.age} onChange={(e) => u("age", e.target.value)} /></div>
       </div>
-      <div><label className={cx.label}>Temporary password * <span className="text-slate-400 font-normal">(min 8 chars)</span></label><input type="password" className={cx.input} value={form.password} onChange={(e) => u("password", e.target.value)} /></div>
+      <div><label className={cx.label}>Temporary password * <span className="text-slate-400 dark:text-slate-500 font-normal">(min 8 chars)</span></label><input type="password" className={cx.input} value={form.password} onChange={(e) => u("password", e.target.value)} /></div>
       <div><label className={cx.label}>Guardian name *</label><input className={cx.input} value={form.guardian} onChange={(e) => u("guardian", e.target.value)} /></div>
       <div><label className={cx.label}>Phone</label><input className={cx.input} value={form.phone} onChange={(e) => u("phone", e.target.value)} /></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

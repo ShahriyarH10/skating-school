@@ -42,13 +42,13 @@ export default function NoticesPage() {
       ) : (
         <div className="space-y-3">
           {notices.map((n) => (
-            <div key={n.id} className={`bg-white rounded-2xl border border-slate-200/80 shadow-card border-l-[3px] p-5 ${n.urgent ? "border-l-red-500" : "border-l-teal"}`}>
-              <div className="flex items-center gap-2 text-xs text-slate-400 mb-2 flex-wrap">
+            <div key={n.id} className={`bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-card border-l-[3px] p-5 ${n.urgent ? "border-l-red-500" : "border-l-teal"}`}>
+              <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-2 flex-wrap">
                 <span>{n.date}</span><span>·</span><span>{n.author}</span><span>·</span><span>{n.audience}</span>
                 {n.urgent && <Badge tone="red">Urgent</Badge>}
               </div>
-              <h4 className="font-bold text-sm text-slate-800 mb-1">{n.title}</h4>
-              <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{n.body}</p>
+              <h4 className="font-bold text-sm text-slate-800 dark:text-slate-100 mb-1">{n.title}</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{n.body}</p>
             </div>
           ))}
         </div>
@@ -93,7 +93,7 @@ function NoticeModal({ clubs, isInstructor, onClose, onSave }) {
             </select>
           </div>
         )}
-        <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 cursor-pointer self-end pb-2.5">
+        <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 cursor-pointer self-end pb-2.5">
           <input type="checkbox" checked={form.urgent} onChange={(e) => u("urgent", e.target.checked)} className="w-4 h-4 accent-teal" /> Mark as Urgent
         </label>
       </div>

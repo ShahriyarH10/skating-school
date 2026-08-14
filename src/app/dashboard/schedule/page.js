@@ -50,7 +50,7 @@ export default function SchedulePage() {
       )}
 
       <div className={cx.card}>
-        <div className={cx.cardHeader}><h3 className="font-bold text-sm text-slate-800">Weekly Training Schedule</h3></div>
+        <div className={cx.cardHeader}><h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Weekly Training Schedule</h3></div>
         {schedules.length === 0 ? (
           <EmptyState icon={Icon.Calendar} title="No schedule slots yet" hint={canEdit ? "Add your first training slot." : "Check back once your branch schedule is set."} />
         ) : (
@@ -58,15 +58,15 @@ export default function SchedulePage() {
             <div className="md:hidden divide-y divide-slate-100">
               {DAY_ORDER.filter((day) => schedules.some((s) => s.day === day)).map((day) => (
                 <div key={day} className="p-4">
-                  <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">{day}</div>
+                  <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2.5">{day}</div>
                   <div className="space-y-2.5">
                     {schedules.filter((s) => s.day === day).map((s) => (
-                      <div key={s.id} className="flex items-center justify-between gap-3 bg-slate-50/70 rounded-xl p-3">
+                      <div key={s.id} className="flex items-center justify-between gap-3 bg-slate-50/70 dark:bg-slate-900/40 rounded-xl p-3">
                         <div className="min-w-0">
-                          <div className="flex items-center gap-1.5 text-sm font-semibold text-slate-700">
-                            <Icon.Clock width={13} height={13} className="text-slate-400 flex-shrink-0" />{s.time}
+                          <div className="flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            <Icon.Clock width={13} height={13} className="text-slate-400 dark:text-slate-500 flex-shrink-0" />{s.time}
                           </div>
-                          <div className="text-xs text-slate-500 mt-1 truncate">{s.instructor} · {s.club}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">{s.instructor} · {s.club}</div>
                         </div>
                         <Badge tone={PROGRAM_TONE[s.program] || "slate"}>{s.program}</Badge>
                       </div>
@@ -85,8 +85,8 @@ export default function SchedulePage() {
                     const daySchedules = schedules.filter((s) => s.day === day);
                     return daySchedules.map((s, i) => (
                       <tr key={s.id} className={cx.tr}>
-                        {i === 0 && <td rowSpan={daySchedules.length} className="px-4 py-3.5 font-bold align-top text-slate-800">{day}</td>}
-                        <td className={cx.td}><span className="inline-flex items-center gap-1.5 text-slate-600"><Icon.Clock width={13} height={13} className="text-slate-400" />{s.time}</span></td>
+                        {i === 0 && <td rowSpan={daySchedules.length} className="px-4 py-3.5 font-bold align-top text-slate-800 dark:text-slate-100">{day}</td>}
+                        <td className={cx.td}><span className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300"><Icon.Clock width={13} height={13} className="text-slate-400 dark:text-slate-500" />{s.time}</span></td>
                         <td className={cx.td}><Badge tone={PROGRAM_TONE[s.program] || "slate"}>{s.program}</Badge></td>
                         <td className={cx.td + " text-xs"}>{s.club}</td>
                         <td className={cx.td}>{s.instructor}</td>
@@ -152,7 +152,7 @@ function ScheduleModal({ clubs, instructors, onClose, onSave }) {
           {clubs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
       </div>
-      <div><label className={cx.label}>Instructor * <span className="text-slate-400 font-normal">(must belong to selected branch)</span></label>
+      <div><label className={cx.label}>Instructor * <span className="text-slate-400 dark:text-slate-500 font-normal">(must belong to selected branch)</span></label>
         <select className={cx.input} value={form.instructorId} onChange={(e) => u("instructorId", e.target.value)}>
           <option value="">Select instructor…</option>
           {clubInstructors.map((i) => <option key={i.instructorId} value={i.instructorId}>{i.name}</option>)}

@@ -64,8 +64,8 @@ export default function DashboardHome() {
                   {payments.slice(0, 6).map((p) => (
                     <tr key={p.id} className={cx.tr}>
                       <td className={cx.td + " font-semibold"}>{p.studentName}</td>
-                      <td className={cx.td + " font-bold text-slate-800"}>৳{p.amount.toLocaleString()}</td>
-                      <td className={cx.td + " text-slate-400"}>{p.date}</td>
+                      <td className={cx.td + " font-bold text-slate-800 dark:text-slate-100"}>৳{p.amount.toLocaleString()}</td>
+                      <td className={cx.td + " text-slate-400 dark:text-slate-500"}>{p.date}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -86,7 +86,7 @@ export default function DashboardHome() {
               {notices.slice(0, 4).map((n) => (
                 <div key={n.id} className={`p-3.5 rounded-xl border-l-[3px] bg-slate-50/70 dark:bg-slate-900/40 ${n.urgent ? "border-l-red-500" : "border-l-teal"}`}>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[11px] text-slate-400">{n.date}</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500">{n.date}</span>
                     {n.urgent && <Badge tone="red">Urgent</Badge>}
                   </div>
                   <div className="font-semibold text-sm text-slate-800 dark:text-slate-100">{n.title}</div>
@@ -116,8 +116,8 @@ function FeeStatusWidget({ students, payments }) {
           </div>
           <div className="min-w-0">
             <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Fee Status — {thisMonthLabel}</h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              <span className="text-emerald-600 font-semibold">{paid} paid</span> · <span className={unpaid ? "text-red-500 font-semibold" : "text-slate-400"}>{unpaid} unpaid</span> of {students.length} students
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <span className="text-emerald-600 font-semibold">{paid} paid</span> · <span className={unpaid ? "text-red-500 font-semibold" : "text-slate-400 dark:text-slate-500"}>{unpaid} unpaid</span> of {students.length} students
             </p>
           </div>
         </div>
@@ -147,7 +147,7 @@ function StatCard({ icon: IconComp, label, value, tone = "slate" }) {
         <IconComp width={16} height={16} />
       </div>
       <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight truncate">{value}</div>
-      <div className="text-xs font-medium text-slate-500 mt-0.5">{label}</div>
+      <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">{label}</div>
     </div>
   );
 }

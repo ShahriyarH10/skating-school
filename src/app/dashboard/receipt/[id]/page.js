@@ -52,7 +52,7 @@ export default function ReceiptPage() {
       </Link>
 
       <div className="print-area max-w-lg mx-auto">
-        <div className="bg-white rounded-2xl shadow-card overflow-hidden animate-scaleIn">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-card overflow-hidden animate-scaleIn">
           {/* Header band */}
           <div className="relative bg-gradient-to-br from-navy via-teal-dark to-teal px-7 pt-7 pb-8 text-center overflow-hidden">
             <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #fff 1px, transparent 0)", backgroundSize: "20px 20px" }} />
@@ -73,32 +73,32 @@ export default function ReceiptPage() {
 
           <div className="px-7 py-6 space-y-5">
             <div>
-              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Student</h3>
+              <h3 className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Student</h3>
               <div className="space-y-2.5">
                 {infoRows.map((r) => (
                   <div key={r.label} className="flex items-center gap-3">
                     <div className="w-7 h-7 rounded-lg bg-teal/10 text-teal-dark flex items-center justify-center flex-shrink-0">
                       <r.icon width={14} height={14} />
                     </div>
-                    <span className="text-xs text-slate-500 w-20 flex-shrink-0">{r.label}</span>
-                    <span className="text-sm font-semibold text-slate-800 text-right flex-1 truncate">{r.value}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 w-20 flex-shrink-0">{r.label}</span>
+                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 text-right flex-1 truncate">{r.value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="border-t border-dashed border-slate-200" />
+            <div className="border-t border-dashed border-slate-200 dark:border-slate-700" />
 
             <div>
-              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Payment</h3>
+              <h3 className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Payment</h3>
               <div className="space-y-2.5">
                 {paymentRows.map((r) => (
                   <div key={r.label} className="flex items-center gap-3">
                     <div className="w-7 h-7 rounded-lg bg-amber/10 text-amber-700 flex items-center justify-center flex-shrink-0">
                       <r.icon width={14} height={14} />
                     </div>
-                    <span className="text-xs text-slate-500 w-20 flex-shrink-0">{r.label}</span>
-                    <span className="text-sm font-semibold text-slate-800 text-right flex-1 truncate">{r.value}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 w-20 flex-shrink-0">{r.label}</span>
+                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-100 text-right flex-1 truncate">{r.value}</span>
                   </div>
                 ))}
               </div>
@@ -109,7 +109,7 @@ export default function ReceiptPage() {
               <span className="text-2xl font-extrabold text-emerald-700 tracking-tight">৳{receipt.amount.toLocaleString()}</span>
             </div>
 
-            <div className="text-center text-[11px] text-slate-400 pt-1">
+            <div className="text-center text-[11px] text-slate-400 dark:text-slate-500 pt-1">
               <p>Thank you for your payment.</p>
               <p>This is a computer-generated receipt and needs no signature.</p>
             </div>
@@ -126,8 +126,8 @@ export default function ReceiptPage() {
             <Icon.MessageCircle width={16} height={16} /> Share via WhatsApp
           </a>
         </div>
-        <p className="text-center text-[11px] text-slate-400 mt-3">
-          "Export PDF" opens your browser's print dialog — choose <span className="font-medium text-slate-500">"Save as PDF"</span> as the destination.
+        <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 mt-3">
+          "Export PDF" opens your browser's print dialog — choose <span className="font-medium text-slate-500 dark:text-slate-400">"Save as PDF"</span> as the destination.
         </p>
       </div>
     </div>

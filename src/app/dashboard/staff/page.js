@@ -65,7 +65,7 @@ export default function StaffPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-sm text-slate-500 max-w-lg">
+        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg">
           Admins have full access across every branch. Instructors are scoped to their assigned branch.
           Promote or demote staff below — the last remaining admin can&apos;t be demoted or removed.
         </p>
@@ -77,20 +77,20 @@ export default function StaffPage() {
           <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber to-amber-light flex items-center justify-center text-white flex-shrink-0">
             <Icon.Crown width={20} height={20} />
           </div>
-          <div><div className="text-2xl font-extrabold text-slate-800 leading-none">{adminCount}</div><div className="text-xs text-slate-500 font-medium mt-1">Administrator{adminCount !== 1 ? "s" : ""}</div></div>
+          <div><div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 leading-none">{adminCount}</div><div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Administrator{adminCount !== 1 ? "s" : ""}</div></div>
         </div>
         <div className={`${cx.card} p-5 flex items-center gap-4`}>
           <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal to-teal-light flex items-center justify-center text-white flex-shrink-0">
             <Icon.Shield width={20} height={20} />
           </div>
-          <div><div className="text-2xl font-extrabold text-slate-800 leading-none">{instructors.length}</div><div className="text-xs text-slate-500 font-medium mt-1">Instructor{instructors.length !== 1 ? "s" : ""}</div></div>
+          <div><div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 leading-none">{instructors.length}</div><div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Instructor{instructors.length !== 1 ? "s" : ""}</div></div>
         </div>
       </div>
 
       {/* Admins */}
       <div className={cx.card}>
         <div className={cx.cardHeader}>
-          <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2"><Icon.Crown width={16} height={16} className="text-amber" /> Administrators</h3>
+          <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2"><Icon.Crown width={16} height={16} className="text-amber" /> Administrators</h3>
         </div>
         {admins.length === 0 ? <div className="p-6"><EmptyState icon={Icon.Crown} title="No administrators" /></div> : (
           <>
@@ -101,10 +101,10 @@ export default function StaffPage() {
                     <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber to-amber-light flex items-center justify-center text-white text-xs font-bold flex-shrink-0">{a.avatar || a.name[0]}</div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-800 truncate">{a.name}</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-100 truncate">{a.name}</span>
                         {a.userId === me.id && <Badge tone="teal">You</Badge>}
                       </div>
-                      <div className="text-xs text-slate-500 truncate">{a.email}{a.phone ? ` · ${a.phone}` : ""}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{a.email}{a.phone ? ` · ${a.phone}` : ""}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 mt-3">
@@ -135,7 +135,7 @@ export default function StaffPage() {
                       <td className={cx.td}>
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber to-amber-light flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">{a.avatar || a.name[0]}</div>
-                          <span className="font-semibold text-slate-800">{a.name}</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">{a.name}</span>
                           {a.userId === me.id && <Badge tone="teal">You</Badge>}
                         </div>
                       </td>
@@ -173,7 +173,7 @@ export default function StaffPage() {
       {/* Instructors */}
       <div className={cx.card}>
         <div className={cx.cardHeader}>
-          <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2"><Icon.Shield width={16} height={16} className="text-teal" /> Instructors</h3>
+          <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2"><Icon.Shield width={16} height={16} className="text-teal" /> Instructors</h3>
         </div>
         {instructors.length === 0 ? (
           <div className="p-6"><EmptyState icon={Icon.Shield} title="No instructors yet" hint="Add your first instructor to assign schedules and mark attendance." /></div>
@@ -185,10 +185,10 @@ export default function StaffPage() {
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal to-teal-light flex items-center justify-center text-white text-xs font-bold flex-shrink-0">{i.avatar || i.name[0]}</div>
                     <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-slate-800 truncate">{i.name}</div>
-                      <div className="text-xs text-slate-500 truncate">{i.specialization || "No specialization"} · {i.email}</div>
+                      <div className="font-semibold text-slate-800 dark:text-slate-100 truncate">{i.name}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{i.specialization || "No specialization"} · {i.email}</div>
                     </div>
-                    {i.club ? <Badge tone="teal">{i.club}</Badge> : <span className="text-slate-400 text-[11px] flex-shrink-0">Unassigned</span>}
+                    {i.club ? <Badge tone="teal">{i.club}</Badge> : <span className="text-slate-400 dark:text-slate-500 text-[11px] flex-shrink-0">Unassigned</span>}
                   </div>
                   <div className="flex items-center gap-2 mt-3 flex-wrap">
                     <button onClick={() => setEditing(i)} className={cx.btnGhost}><Icon.Edit width={13} height={13} /> Edit</button>
@@ -211,13 +211,13 @@ export default function StaffPage() {
                       <td className={cx.td}>
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal to-teal-light flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">{i.avatar || i.name[0]}</div>
-                          <span className="font-semibold text-slate-800">{i.name}</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">{i.name}</span>
                         </div>
                       </td>
-                      <td className={cx.td}>{i.club ? <Badge tone="teal">{i.club}</Badge> : <span className="text-slate-400 text-xs">Unassigned</span>}</td>
+                      <td className={cx.td}>{i.club ? <Badge tone="teal">{i.club}</Badge> : <span className="text-slate-400 dark:text-slate-500 text-xs">Unassigned</span>}</td>
                       <td className={cx.td}>{i.specialization || "—"}</td>
                       <td className={cx.td}>
-                        <div className="text-xs text-slate-500 flex flex-col gap-0.5">
+                        <div className="text-xs text-slate-500 dark:text-slate-400 flex flex-col gap-0.5">
                           <span>{i.email}</span>
                           {i.phone && <span>{i.phone}</span>}
                         </div>
@@ -283,7 +283,7 @@ function InstructorModal({ title, clubs, onClose, onSave }) {
         <div><label className={cx.label}>Email *</label><input type="email" className={cx.input} value={form.email} onChange={(e) => u("email", e.target.value)} /></div>
         <div><label className={cx.label}>Phone</label><input className={cx.input} value={form.phone} onChange={(e) => u("phone", e.target.value)} /></div>
       </div>
-      <div><label className={cx.label}>Temporary password * <span className="text-slate-400 font-normal">(min 8 chars)</span></label><input type="password" className={cx.input} value={form.password} onChange={(e) => u("password", e.target.value)} /></div>
+      <div><label className={cx.label}>Temporary password * <span className="text-slate-400 dark:text-slate-500 font-normal">(min 8 chars)</span></label><input type="password" className={cx.input} value={form.password} onChange={(e) => u("password", e.target.value)} /></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label className={cx.label}>Specialization</label><input className={cx.input} placeholder="e.g. Speed Skating" value={form.specialization} onChange={(e) => u("specialization", e.target.value)} /></div>
         <div><label className={cx.label}>Branch</label>

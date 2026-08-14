@@ -72,13 +72,13 @@ export default function PaymentHistoryPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative">
-          <Icon.Calendar width={15} height={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <Icon.Calendar width={15} height={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
           <select className={cx.input + " pl-9 w-48 font-medium"} value={month} onChange={(e) => setMonth(e.target.value)}>
             {monthOptions.map((m) => <option key={m} value={m}>{m}</option>)}
           </select>
         </div>
         <div className="relative flex-1 min-w-[180px]">
-          <Icon.Search width={15} height={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Icon.Search width={15} height={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input className={cx.input + " pl-9"} placeholder="Search by name or guardian…" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         {user.role === "admin" && (
@@ -106,14 +106,14 @@ export default function PaymentHistoryPage() {
                 <div key={s.id} className="flex items-center gap-3 p-4">
                   <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal to-amber flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">{s.avatar || s.name[0]}</div>
                   <div className="min-w-0 flex-1">
-                    <div className="font-semibold text-sm text-slate-800 truncate">{s.name}</div>
-                    <div className="text-xs text-slate-500 truncate">{s.club || "Unassigned"} · {s.program}</div>
+                    <div className="font-semibold text-sm text-slate-800 dark:text-slate-100 truncate">{s.name}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{s.club || "Unassigned"} · {s.program}</div>
                   </div>
                   <div className="flex-shrink-0 text-right">
                     {p ? (
                       <>
                         <Badge tone="emerald">Paid</Badge>
-                        <div className="text-xs font-bold text-slate-700 mt-1">৳{p.amount.toLocaleString()}</div>
+                        <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">৳{p.amount.toLocaleString()}</div>
                       </>
                     ) : (
                       <Badge tone="red">Unpaid</Badge>
@@ -134,14 +134,14 @@ export default function PaymentHistoryPage() {
                       <td className={cx.td}>
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal to-amber flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">{s.avatar || s.name[0]}</div>
-                          <span className="font-semibold text-slate-800">{s.name}</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">{s.name}</span>
                         </div>
                       </td>
                       <td className={cx.td + " text-xs"}>{s.club || "Unassigned"}</td>
                       <td className={cx.td}>{s.program}</td>
                       <td className={cx.td}>{p ? <Badge tone="emerald">Paid</Badge> : <Badge tone="red">Unpaid</Badge>}</td>
-                      <td className={cx.td + " font-bold text-slate-800"}>{p ? `৳${p.amount.toLocaleString()}` : "—"}</td>
-                      <td className={cx.td + " text-slate-400"}>{p ? p.date : "—"}</td>
+                      <td className={cx.td + " font-bold text-slate-800 dark:text-slate-100"}>{p ? `৳${p.amount.toLocaleString()}` : "—"}</td>
+                      <td className={cx.td + " text-slate-400 dark:text-slate-500"}>{p ? p.date : "—"}</td>
                       <td className={cx.td}>{p ? <Link href={`/dashboard/receipt/${p.id}`} className={cx.link}>View →</Link> : "—"}</td>
                     </tr>
                   ))}
@@ -163,8 +163,8 @@ function SummaryCard({ icon: IconComp, label, value, tone, onClick, active }) {
       <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${tones[tone]} flex items-center justify-center text-white mb-3`}>
         <IconComp width={16} height={16} />
       </div>
-      <div className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight truncate">{value}</div>
-      <div className="text-xs font-medium text-slate-500 mt-0.5">{label}</div>
+      <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight truncate">{value}</div>
+      <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">{label}</div>
     </Comp>
   );
 }

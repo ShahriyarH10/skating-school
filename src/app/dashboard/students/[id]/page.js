@@ -41,40 +41,40 @@ export default function StudentDetailPage() {
         <div className="flex flex-wrap items-center gap-5 mb-6">
           {student.photo ? (
             // eslint-disable-next-line @next/next/no-img-element -- inline base64 data URL, nothing for next/image to optimize
-            <img src={student.photo} alt={student.name} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 border border-slate-200" />
+            <img src={student.photo} alt={student.name} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 border border-slate-200 dark:border-slate-700" />
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal to-amber flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
               {student.avatar || student.name[0]}
             </div>
           )}
           <div>
-            <h2 className="text-xl font-extrabold text-slate-900">{student.name}</h2>
+            <h2 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{student.name}</h2>
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
               <Badge tone={PROGRAM_TONE[student.program] || "slate"}>{student.program}</Badge>
-              <span className="text-xs text-slate-500">{student.club || "Unassigned"}</span>
-              {student.gender && <span className="text-xs text-slate-400">· {student.gender === "MALE" ? "Male" : "Female"}</span>}
+              <span className="text-xs text-slate-500 dark:text-slate-400">{student.club || "Unassigned"}</span>
+              {student.gender && <span className="text-xs text-slate-400 dark:text-slate-500">· {student.gender === "MALE" ? "Male" : "Female"}</span>}
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 pt-5 border-t border-slate-100">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 pt-5 border-t border-slate-100 dark:border-slate-700">
           {[
             ["Age", student.age ?? "—"],
             ["Guardian", student.guardian || "—"],
             ["Phone", student.phone || "—"],
             ["Enrolled", fmtDate(student.enrollDate)],
-            ["Attendance Rate", <span key="r" className={attRate >= 75 ? "text-emerald-600" : attRate > 0 ? "text-red-500" : "text-slate-400"}>{attendance.length ? `${attRate}%` : "No data"}</span>],
+            ["Attendance Rate", <span key="r" className={attRate >= 75 ? "text-emerald-600" : attRate > 0 ? "text-red-500" : "text-slate-400 dark:text-slate-500"}>{attendance.length ? `${attRate}%` : "No data"}</span>],
             ["Total Paid", `৳${totalPaid.toLocaleString()}`],
           ].map(([lbl, val]) => (
-            <div key={lbl}><div className="text-xs text-slate-400 font-medium">{lbl}</div><div className="text-sm font-semibold mt-0.5 text-slate-800">{val}</div></div>
+            <div key={lbl}><div className="text-xs text-slate-400 dark:text-slate-500 font-medium">{lbl}</div><div className="text-sm font-semibold mt-0.5 text-slate-800 dark:text-slate-100">{val}</div></div>
           ))}
         </div>
       </div>
 
       <div className={cx.card}>
         <div className="px-5 pt-3">
-          <div className="flex gap-1 border-b border-slate-100 -mx-5 px-5">
+          <div className="flex gap-1 border-b border-slate-100 dark:border-slate-700 -mx-5 px-5">
             {[["overview", "Profile"], ["payments", "Payments"]].map(([id_, label]) => (
-              <button key={id_} onClick={() => setTab(id_)} className={`px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors ${tab === id_ ? "border-teal text-teal" : "border-transparent text-slate-500 hover:text-slate-700"}`}>
+              <button key={id_} onClick={() => setTab(id_)} className={`px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors ${tab === id_ ? "border-teal text-teal" : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300"}`}>
                 {label}
               </button>
             ))}
@@ -109,12 +109,12 @@ export default function StudentDetailPage() {
               <>
                 <div className="sm:hidden divide-y divide-slate-100">
                   {payments.map((p) => (
-                    <Link key={p.id} href={`/dashboard/receipt/${p.id}`} className="flex items-center justify-between gap-3 p-4 active:bg-slate-50">
+                    <Link key={p.id} href={`/dashboard/receipt/${p.id}`} className="flex items-center justify-between gap-3 p-4 active:bg-slate-50 dark:active:bg-slate-700/60">
                       <div className="min-w-0">
-                        <div className="font-semibold text-slate-800 truncate">{p.receiptNo}</div>
-                        <div className="text-xs text-slate-400 mt-0.5">{p.type.replace(/_/g, " ")} · {p.date}</div>
+                        <div className="font-semibold text-slate-800 dark:text-slate-100 truncate">{p.receiptNo}</div>
+                        <div className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{p.type.replace(/_/g, " ")} · {p.date}</div>
                       </div>
-                      <div className="font-bold text-slate-800 flex-shrink-0">৳{p.amount.toLocaleString()}</div>
+                      <div className="font-bold text-slate-800 dark:text-slate-100 flex-shrink-0">৳{p.amount.toLocaleString()}</div>
                     </Link>
                   ))}
                 </div>
@@ -125,9 +125,9 @@ export default function StudentDetailPage() {
                       {payments.map((p) => (
                         <tr key={p.id} className={cx.tr}>
                           <td className={cx.td + " font-semibold"}>{p.receiptNo}</td>
-                          <td className={cx.td + " font-bold text-slate-800"}>৳{p.amount.toLocaleString()}</td>
+                          <td className={cx.td + " font-bold text-slate-800 dark:text-slate-100"}>৳{p.amount.toLocaleString()}</td>
                           <td className={cx.td}>{p.type.replace(/_/g, " ")}</td>
-                          <td className={cx.td + " text-slate-400"}>{p.date}</td>
+                          <td className={cx.td + " text-slate-400 dark:text-slate-500"}>{p.date}</td>
                           <td className={cx.td}><Link href={`/dashboard/receipt/${p.id}`} className={cx.link}>View Receipt →</Link></td>
                         </tr>
                       ))}
@@ -148,10 +148,10 @@ function DetailSection({ title, fields }) {
   if (visible.length === 0) return null;
   return (
     <div>
-      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">{title}</h3>
+      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">{title}</h3>
       <div className="grid sm:grid-cols-2 gap-x-5 gap-y-3">
         {visible.map(([lbl, val]) => (
-          <div key={lbl}><div className="text-xs text-slate-400 font-medium">{lbl}</div><div className="text-sm font-semibold mt-0.5 text-slate-800 whitespace-pre-wrap">{val}</div></div>
+          <div key={lbl}><div className="text-xs text-slate-400 dark:text-slate-500 font-medium">{lbl}</div><div className="text-sm font-semibold mt-0.5 text-slate-800 dark:text-slate-100 whitespace-pre-wrap">{val}</div></div>
         ))}
       </div>
     </div>

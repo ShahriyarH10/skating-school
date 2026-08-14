@@ -34,22 +34,22 @@ export default function ReportsPage() {
 
       <div className="grid md:grid-cols-2 gap-5">
         <div className={cx.card}>
-          <div className={cx.cardHeader}><h3 className="font-bold text-sm text-slate-800">Students by Branch</h3></div>
+          <div className={cx.cardHeader}><h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Students by Branch</h3></div>
           <div className="p-5 space-y-3">
             {Object.entries(byClub).map(([k, v]) => (
               <div key={k}>
-                <div className="flex justify-between text-sm mb-1"><span className="text-slate-600">{k}</span><span className="font-bold text-slate-800">{v}</span></div>
+                <div className="flex justify-between text-sm mb-1"><span className="text-slate-600 dark:text-slate-300">{k}</span><span className="font-bold text-slate-800 dark:text-slate-100">{v}</span></div>
                 <div className="h-2 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-gradient-to-r from-teal to-teal-light rounded-full" style={{ width: `${(v / maxClub) * 100}%` }} /></div>
               </div>
             ))}
           </div>
         </div>
         <div className={cx.card}>
-          <div className={cx.cardHeader}><h3 className="font-bold text-sm text-slate-800">Students by Program</h3></div>
+          <div className={cx.cardHeader}><h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Students by Program</h3></div>
           <div className="p-5 space-y-3">
             {Object.entries(byProgram).map(([k, v]) => (
               <div key={k}>
-                <div className="flex justify-between text-sm mb-1"><span className="text-slate-600">{k}</span><span className="font-bold text-slate-800">{v}</span></div>
+                <div className="flex justify-between text-sm mb-1"><span className="text-slate-600 dark:text-slate-300">{k}</span><span className="font-bold text-slate-800 dark:text-slate-100">{v}</span></div>
                 <div className="h-2 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-gradient-to-r from-amber to-amber-light rounded-full" style={{ width: `${(v / maxProgram) * 100}%` }} /></div>
               </div>
             ))}
@@ -67,8 +67,8 @@ function StatCard({ icon: IconComp, label, value, tone }) {
       <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${tones[tone]} flex items-center justify-center text-white mb-3`}>
         <IconComp width={16} height={16} />
       </div>
-      <div className="text-2xl font-extrabold text-slate-900 tracking-tight">{value}</div>
-      <div className="text-xs font-medium text-slate-500 mt-0.5">{label}</div>
+      <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">{value}</div>
+      <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">{label}</div>
     </div>
   );
 }

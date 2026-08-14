@@ -34,13 +34,13 @@ export default function ProfilePage() {
             {user.avatar || user.name?.[0]}
           </div>
           <div>
-            <h2 className="text-xl font-extrabold text-slate-900">{user.name}</h2>
+            <h2 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{user.name}</h2>
             <Badge tone="teal">{user.role}</Badge>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           {[["Email", user.email], ["Phone", user.phone || "—"], ["Branch", user.club || "—"], ["Role", user.role]].map(([l, v]) => (
-            <div key={l}><div className="text-xs text-slate-400 font-medium">{l}</div><div className="text-sm font-semibold mt-0.5 text-slate-800 capitalize">{v}</div></div>
+            <div key={l}><div className="text-xs text-slate-400 dark:text-slate-500 font-medium">{l}</div><div className="text-sm font-semibold mt-0.5 text-slate-800 dark:text-slate-100 capitalize">{v}</div></div>
           ))}
         </div>
       </div>
@@ -48,9 +48,9 @@ export default function ProfilePage() {
       <div className={cx.card + " p-6"}>
         <div className="flex items-center gap-2 mb-1">
           <Icon.Lock width={16} height={16} className="text-teal" />
-          <h3 className="font-bold text-slate-800">Change Password</h3>
+          <h3 className="font-bold text-slate-800 dark:text-slate-100">Change Password</h3>
         </div>
-        <p className="text-xs text-slate-500 mb-5">Use at least 8 characters with upper, lower and a number.</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">Use at least 8 characters with upper, lower and a number.</p>
         {err && <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4">{err}</div>}
         {msg && <div className="bg-emerald-50 text-emerald-700 text-sm p-3 rounded-xl mb-4">{msg}</div>}
         <div className="space-y-3">

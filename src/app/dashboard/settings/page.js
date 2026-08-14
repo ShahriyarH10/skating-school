@@ -46,9 +46,9 @@ export default function SettingsPage() {
     <div className={cx.card + " p-6 max-w-xl"}>
       <div className="flex items-center gap-3 mb-1">
         <Icon.Settings width={18} height={18} className="text-teal" />
-        <h3 className="font-bold text-slate-800">School Settings</h3>
+        <h3 className="font-bold text-slate-800 dark:text-slate-100">School Settings</h3>
       </div>
-      <p className="text-xs text-slate-500 mb-6">These values appear on receipts and across the public site.</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">These values appear on receipts and across the public site.</p>
 
       <div className="space-y-4">
         {FIELDS.map((f) => (

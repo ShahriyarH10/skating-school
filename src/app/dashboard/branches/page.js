@@ -58,7 +58,7 @@ export default function BranchesPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-sm text-slate-500 max-w-lg">Branches are the physical clubs students and instructors are assigned to. Deactivate a branch to hide it from new enrollments without deleting its history.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg">Branches are the physical clubs students and instructors are assigned to. Deactivate a branch to hide it from new enrollments without deleting its history.</p>
         <button onClick={() => setShowAdd(true)} className={cx.btnPrimary}><Icon.Plus width={16} height={16} /> Add Branch</button>
       </div>
 
@@ -75,14 +75,14 @@ export default function BranchesPage() {
                 <Badge tone={c.status === "active" ? "emerald" : "slate"}>{c.status === "active" ? "Active" : "Inactive"}</Badge>
               </div>
               <div>
-                <div className="font-bold text-slate-800">{c.name}</div>
-                <div className="text-xs text-slate-500 flex items-center gap-1 mt-1"><Icon.MapPin width={12} height={12} />{c.location}</div>
+                <div className="font-bold text-slate-800 dark:text-slate-100">{c.name}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1"><Icon.MapPin width={12} height={12} />{c.location}</div>
               </div>
-              <div className="flex items-center gap-4 text-xs text-slate-500">
+              <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1"><Icon.Users width={13} height={13} />{c.studentCount} student{c.studentCount !== 1 && "s"}</span>
                 <span className="flex items-center gap-1"><Icon.Shield width={13} height={13} />{c.instructorCount} instructor{c.instructorCount !== 1 && "s"}</span>
               </div>
-              <div className="flex items-center gap-2 pt-2 border-t border-slate-100 mt-auto">
+              <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-700 mt-auto">
                 <button onClick={() => setEditing(c)} className={cx.btnGhost}><Icon.Edit width={13} height={13} /> Edit</button>
                 <button disabled={busyId === c.id} onClick={() => toggleStatus(c)} className={cx.btnGhost + " disabled:opacity-40"}>
                   {c.status === "active" ? "Deactivate" : "Activate"}

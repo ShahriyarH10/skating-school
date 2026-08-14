@@ -38,9 +38,9 @@ export default function FeesPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap gap-3 items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-slate-500">
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
           <Icon.Wallet width={15} height={15} />
-          <span className="font-semibold text-slate-700">৳{total.toLocaleString()}</span> total across {payments.length} payment{payments.length !== 1 ? "s" : ""}
+          <span className="font-semibold text-slate-700 dark:text-slate-300">৳{total.toLocaleString()}</span> total across {payments.length} payment{payments.length !== 1 ? "s" : ""}
         </div>
         {canRecord && <button onClick={() => setShowModal(true)} className={cx.btnPrimary}><Icon.Plus width={16} height={16} /> Record Payment</button>}
       </div>
@@ -52,15 +52,15 @@ export default function FeesPage() {
           <>
             <div className="md:hidden divide-y divide-slate-100">
               {payments.map((p) => (
-                <Link key={p.id} href={`/dashboard/receipt/${p.id}`} className="block p-4 active:bg-slate-50 transition-colors">
+                <Link key={p.id} href={`/dashboard/receipt/${p.id}`} className="block p-4 active:bg-slate-50 dark:active:bg-slate-700/60 transition-colors">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      {canRecord && <div className="font-semibold text-[15px] text-slate-800 truncate">{p.studentName}</div>}
-                      <div className="text-xs text-slate-400 mt-0.5">{p.receiptNo} · {p.date}</div>
+                      {canRecord && <div className="font-semibold text-[15px] text-slate-800 dark:text-slate-100 truncate">{p.studentName}</div>}
+                      <div className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{p.receiptNo} · {p.date}</div>
                     </div>
-                    <div className="font-bold text-slate-800 text-[15px] flex-shrink-0">৳{p.amount.toLocaleString()}</div>
+                    <div className="font-bold text-slate-800 dark:text-slate-100 text-[15px] flex-shrink-0">৳{p.amount.toLocaleString()}</div>
                   </div>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+                  <div className="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-400">
                     <span className="bg-slate-100 rounded-full px-2.5 py-1 font-medium">{TYPE_LABEL[p.type] || p.type}</span>
                     <span className="bg-slate-100 rounded-full px-2.5 py-1 font-medium">{METHOD_LABEL[p.method] || p.method}</span>
                     <span className="truncate">{p.month}</span>
@@ -79,12 +79,12 @@ export default function FeesPage() {
                   {payments.map((p) => (
                     <tr key={p.id} className={cx.tr}>
                       {canRecord && <td className={cx.td + " font-semibold"}>{p.studentName}</td>}
-                      <td className={cx.td + " font-semibold text-slate-600"}>{p.receiptNo}</td>
-                      <td className={cx.td + " font-bold text-slate-800"}>৳{p.amount.toLocaleString()}</td>
+                      <td className={cx.td + " font-semibold text-slate-600 dark:text-slate-300"}>{p.receiptNo}</td>
+                      <td className={cx.td + " font-bold text-slate-800 dark:text-slate-100"}>৳{p.amount.toLocaleString()}</td>
                       <td className={cx.td}>{TYPE_LABEL[p.type] || p.type}</td>
                       <td className={cx.td}>{p.month}</td>
                       <td className={cx.td}>{METHOD_LABEL[p.method] || p.method}</td>
-                      <td className={cx.td + " text-slate-400"}>{p.date}</td>
+                      <td className={cx.td + " text-slate-400 dark:text-slate-500"}>{p.date}</td>
                       <td className={cx.td}><Link href={`/dashboard/receipt/${p.id}`} className={cx.link}>View Receipt →</Link></td>
                     </tr>
                   ))}
@@ -136,7 +136,7 @@ function AddPaymentModal({ students, onClose, onAdd }) {
     >
       {error && <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl">{error}</div>}
       {students.length === 0 ? (
-        <div className="text-sm text-slate-500">No students available. Add a student first.</div>
+        <div className="text-sm text-slate-500 dark:text-slate-400">No students available. Add a student first.</div>
       ) : (
         <div><label className={cx.label}>Student *</label>
           <select className={cx.input} value={form.studentId} onChange={(e) => u("studentId", e.target.value)}>
